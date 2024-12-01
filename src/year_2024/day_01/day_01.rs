@@ -16,34 +16,36 @@ pub fn solution() {
 
     println!("Total distance: {}", total_distance);
 }
-
 fn get_locations(input: &Vec<String>, left_direction: bool) -> Vec<i32> {
-    let mut result = Vec::new();
+    let mut result: Vec<i32> = input
+        .iter()
+        .map(|line| {
+            let parts: Vec<&str> = line.split_whitespace().collect();
 
-    for line in input {
-        let parts: Vec<&str> = line.split_whitespace().collect();
+            if parts.len() != 2 {
+                panic!(
+                    "Invalid line format: '{}'. Expected two elements per line.",
+                    line
+                );
+            }
 
-        if parts.len() != 2 {
-            panic!("Invalid line format: '{}'. Expected two elements per line.", line);
-        }
+            let left_location_id: i32 = match parts[0].parse() {
+                Ok(n) => n,
+                Err(_) => panic!("Failed to parse left location ID from '{}'.", parts[0]),
+            };
 
-        let left_location_id: i32 = match parts[0].parse() {
-            Ok(n) => n,
-            Err(_) => panic!("Failed to parse left location ID from '{}'.", parts[0]),
-        };
+            let right_location_id: i32 = match parts[1].parse() {
+                Ok(n) => n,
+                Err(_) => panic!("Failed to parse right location ID from '{}'.", parts[1]),
+            };
 
-        let right_location_id: i32 = match parts[1].parse() {
-            Ok(n) => n,
-            Err(_) => panic!("Failed to parse right location ID from '{}'.", parts[1]),
-        };
+            return match left_direction {
+                true => left_location_id,
+                false => right_location_id,
+            };
+        })
+        .collect();
 
-        if left_direction {
-            result.push(left_location_id);
-        } else {
-            result.push(right_location_id);
-        }
-    }
-
-    result.sort_unstable();
+    result.sort();
     result
 }
