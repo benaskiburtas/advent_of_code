@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use crate::utility::file::read_puzzle_input;
+use std::collections::HashMap;
 
 struct LocationsEntry {
     location_ids: Vec<i32>,
@@ -8,9 +8,7 @@ struct LocationsEntry {
 
 pub fn solution() {
     let input: Vec<String> = read_puzzle_input(file!());
-
-    let locations_left = get_locations(&input, true);
-    let locations_right = get_locations(&input, false);
+    let (locations_left, locations_right) = get_locations(&input);
 
     let total_distance: i32 = locations_left
         .location_ids
@@ -21,11 +19,18 @@ pub fn solution() {
         })
         .sum();
 
-    println!("Total distance: {}", total_distance);
+    println!("Total location distance: {}", total_distance);
 }
-fn get_locations(input: &Vec<String>, left_direction: bool) -> LocationsEntry {
-    let mut location_ids = Vec::new();
-    let mut similarity_map: HashMap<i32, i32> = HashMap::new();
+fn get_locations(input: &Vec<String>) -> (LocationsEntry, LocationsEntry) {
+    let mut locations_left = LocationsEntry {
+        location_ids: Vec::new(),
+        similarity_map: HashMap::new(),
+    };
+
+    let mut locations_right = LocationsEntry {
+        location_ids: Vec::new(),
+        similarity_map: HashMap::new(),
+    };
 
     for line in input {
         let parts: Vec<&str> = line.split_whitespace().collect();
@@ -47,22 +52,20 @@ fn get_locations(input: &Vec<String>, left_direction: bool) -> LocationsEntry {
             Err(_) => panic!("Failed to parse right location ID from '{}'.", parts[1]),
         };
 
-        match left_direction {
-            true => {
-                location_ids.push(left_location_id);
-                *similarity_map.entry(left_location_id).or_insert(0) += 1;
-            }
-            false => {
-                location_ids.push(right_location_id);
-                *similarity_map.entry(right_location_id).or_insert(0) += 1;
-            }
-        }
+        locations_left.location_ids.push(left_location_id);
+        *locations_left
+            .similarity_map
+            .entry(left_location_id)
+            .or_insert(0) += 1;
+
+        locations_right.location_ids.push(right_location_id);
+        *locations_right
+            .similarity_map
+            .entry(right_location_id)
+            .or_insert(0) += 1;
     }
 
-    location_ids.sort();
-
-    LocationsEntry {
-        location_ids,
-        similarity_map,
-    }
+    locations_left.location_ids.sort();
+    locations_right.location_ids.sort();
+    (locations_left, locations_right)
 }
