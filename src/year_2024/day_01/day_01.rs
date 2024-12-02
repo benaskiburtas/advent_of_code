@@ -6,7 +6,7 @@ struct LocationsEntry {
     similarity_map: HashMap<i32, i32>,
 }
 
-pub fn solution() {
+pub fn solution() -> i32 {
     let input: Vec<String> = read_puzzle_input(file!());
     let (locations_left, locations_right) = get_locations(&input);
 
@@ -20,6 +20,7 @@ pub fn solution() {
         .sum();
 
     println!("Total location distance: {}", total_distance);
+    total_distance
 }
 fn get_locations(input: &Vec<String>) -> (LocationsEntry, LocationsEntry) {
     let mut locations_left = LocationsEntry {

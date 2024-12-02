@@ -1,7 +1,7 @@
 use crate::utility::file::read_puzzle_input;
 use std::cmp::Ordering;
 
-pub fn solution() -> usize {
+pub fn solution() -> i32 {
     let reports: Vec<String> = read_puzzle_input(file!());
     let report_count = reports.len();
 
@@ -17,7 +17,7 @@ pub fn solution() -> usize {
         report_count, safe_report_count, unsafe_report_count
     );
 
-    safe_report_count
+    safe_report_count as i32
 }
 
 fn is_report_safe_dampened(report: &String) -> bool {
