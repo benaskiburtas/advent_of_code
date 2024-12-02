@@ -1,4 +1,5 @@
 use crate::utility::file::read_puzzle_input;
+use rayon::prelude::*;
 use std::cmp::Ordering;
 
 pub fn solution() -> i32 {
@@ -6,7 +7,7 @@ pub fn solution() -> i32 {
     let report_count = reports.len();
 
     let safe_report_count = reports
-        .iter()
+        .par_iter()
         .filter(|report| is_report_safe_dampened(report))
         .count();
 
