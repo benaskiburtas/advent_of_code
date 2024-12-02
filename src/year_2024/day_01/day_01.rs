@@ -1,7 +1,5 @@
-use crate::utility::file::read_lines;
 use std::collections::HashMap;
-
-const PUZZLE_INPUT_FILE_PATH: &str = "src/year_2024/day_01/puzzle_input.txt";
+use crate::utility::file::read_puzzle_input;
 
 struct LocationsEntry {
     location_ids: Vec<i32>,
@@ -9,7 +7,7 @@ struct LocationsEntry {
 }
 
 pub fn solution() {
-    let input: Vec<String> = read_lines(PUZZLE_INPUT_FILE_PATH);
+    let input: Vec<String> = read_puzzle_input(file!());
 
     let locations_left = get_locations(&input, true);
     let locations_right = get_locations(&input, false);
