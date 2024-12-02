@@ -1,13 +1,13 @@
 use crate::utility::file::read_puzzle_input;
 use std::cmp::Ordering;
 
-pub fn solution() {
+pub fn solution() -> usize {
     let reports: Vec<String> = read_puzzle_input(file!());
     let report_count = reports.len();
 
     let safe_report_count = reports
         .iter()
-        .filter(|report| is_report_safe(report))
+        .filter(|report| is_report_safe_dampened(report))
         .count();
 
     let unsafe_report_count = reports.len() - safe_report_count;
@@ -16,9 +16,11 @@ pub fn solution() {
         "Out of {} reports, {} were safe and {} were unsafe",
         report_count, safe_report_count, unsafe_report_count
     );
+
+    safe_report_count
 }
 
-fn is_report_safe(report: &str) -> bool {
+fn is_report_safe_dampened(report: &String) -> bool {
     let levels: Vec<i32> = match report
         .split_whitespace()
         .collect::<Vec<&str>>()
@@ -30,6 +32,22 @@ fn is_report_safe(report: &str) -> bool {
         Err(_) => return false,
     };
 
+    if is_report_safe(&levels) {
+        true
+    } else {
+        for i in 0..levels.len() {
+            let left = &levels[..i];
+            let right = &levels[i + 1..];
+            let dampened: Vec<_> = left.iter().chain(right.iter()).cloned().collect();
+            if is_report_safe(&dampened) {
+                return true;
+            }
+        }
+        false
+    }
+}
+
+fn is_report_safe(levels: &Vec<i32>) -> bool {
     let mut increasing = true;
     let mut decreasing = true;
 
